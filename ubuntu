@@ -8,11 +8,22 @@ ubuntuvn="ubuntu:$uversion"
 ubuntunm=$uversion-$(date +%Y%m%d-%H%M%S)
 
 # main() starts here
-if [ -z "$uversion" -o \( "$creatimg" != "$creatopt" \) ]; then
+if [ \( -z "$uversion" \) -o \( \( "$creatimg" != "$creatopt" \) -a  \( ! -z "$creatimg" \) \) ]; then
+	if [ -z "$uversion" ]; then
+		echo "Error: version string is empty"
+	fi
 	echo "usage: ubuntu <version> [$creatopt]"
 	echo ""
 	echo "  <version> : 14.04, 16.04"
 	echo "  $creatopt        : if you want to force creation of another instance"
+	echo ""
+	echo "debug"
+	echo "-----"
+	echo " version          = $uversion"
+	echo " image name       = $creatimg"
+	echo " create option    = $creatopt"
+	echo " docker img name  = $ubuntunm"
+	echo " ubuntu ver str   = $ubuntuvn"
 	exit 1
 fi
 
