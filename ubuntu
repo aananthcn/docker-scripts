@@ -1,0 +1,32 @@
+#! /bin/bash
+
+# variables
+uversion=$1
+creatimg=$2
+creatopt="-c"
+ubuntuvn="ubuntu:$uversion"
+ubuntunm=$uversion-$(date +%Y%m%d-%H%M%S)
+
+# main() starts here
+if [ -z "$uversion" -o \( "$creatimg" != "$creatopt" \) ]; then
+	echo "usage: ubuntu <version> [$creatopt]"
+	echo ""
+	echo "  <version> : 14.04, 16.04"
+	echo "  $creatopt        : if you want to force creation of another instance"
+	exit 1
+fi
+
+container_id=$(docker ps -a | awk -v "x=$ubuntuvn" '{ if ($2 == x) {print $1}}')
+echo $container_id
+
+if [ \( -z "$container_id" \) -o \( "$creatimg" = "$creatopt" \) ]; then
+	echo "Creating new $ubuntuvn docker image..."
+	docker run -v $SSH_AUTH_SOCK:/ssh-agent -e SSH_AUTH_SOCK=/ssh-agent -u $UID \
+		-v /opt:/opt -v /home/$USER:/home/$USER -v /etc/passwd:/etc/passwd:ro \
+		--name=$ubuntunm -it --privileged $ubuntuvn
+else
+	echo "Starting Ubuntu! [$container_id]"
+	docker start $container_id
+	echo "Attaching to $container_id!"
+	docker attach $container_id
+fi
