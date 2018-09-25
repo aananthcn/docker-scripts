@@ -3,12 +3,13 @@
 # variables
 uversion=$1
 creatimg=$2
+rootuser=$2
 creatopt="-c"
 ubuntuvn="ubuntu:$uversion"
 ubuntunm=$uversion-$(date +%Y%m%d-%H%M%S)
 
 # main() starts here
-if [ \( -z "$uversion" \) -o \( \( "$creatimg" != "$creatopt" \) -a  \( ! -z "$creatimg" \) \) ]; then
+if [ \( -z "$uversion" \) -o \( \( "$creatimg" != "$creatopt" \) -a  \( ! -z "$creatimg" \) -a  \( "$rootuser" != "root" \) \) ]; then
 	if [ -z "$uversion" ]; then
 		echo "Error: version string is empty"
 	fi
@@ -40,5 +41,9 @@ else
 	echo "Starting Ubuntu! [$container_id]"
 	docker start $container_id
 	echo "Attaching to $container_id!"
-	docker attach $container_id
+	if [ "$rootuser" == "root" ]; then
+		docker exec -u 0 -it $container_id bash
+	else
+		docker attach $container_id
+	fi
 fi
