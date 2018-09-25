@@ -34,6 +34,7 @@ if [ \( -z "$container_id" \) -o \( "$creatimg" = "$creatopt" \) ]; then
 	echo "Creating new $ubuntuvn docker image..."
 	docker run -v $SSH_AUTH_SOCK:/ssh-agent -e SSH_AUTH_SOCK=/ssh-agent -u $UID \
 		-v /opt:/opt -v /home/$USER:/home/$USER -v /etc/passwd:/etc/passwd:ro \
+		-v /etc/group:/etc/group:ro -v /etc/shadow:/etc/shadow:ro \
 		--name=$ubuntunm -it --privileged $ubuntuvn
 else
 	echo "Starting Ubuntu! [$container_id]"
