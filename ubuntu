@@ -13,7 +13,8 @@ if [ \( -z "$uversion" \) -o \( \( "$creatimg" != "$creatopt" \) -a  \( ! -z "$c
 	if [ -z "$uversion" ]; then
 		echo "Error: version string is empty"
 	fi
-	echo "usage: ubuntu <version> [$creatopt]"
+	echo "usage1: ubuntu <version> [$creatopt]    //normal usage"
+	echo "usage2: ubuntu <version> root    //root login"
 	echo ""
 	echo "  <version> : 14.04, 16.04"
 	echo "  $creatopt        : if you want to force creation of another instance"
@@ -35,8 +36,7 @@ if [ \( -z "$container_id" \) -o \( "$creatimg" = "$creatopt" \) ]; then
 	echo "Creating new $ubuntuvn docker image..."
 	docker run -v $SSH_AUTH_SOCK:/ssh-agent -e SSH_AUTH_SOCK=/ssh-agent -u $UID \
 		-v /opt:/opt -v /home/$USER:/home/$USER -v /etc/passwd:/etc/passwd:ro \
-		-v /etc/group:/etc/group:ro -v /etc/shadow:/etc/shadow:ro \
-		--name=$ubuntunm -it --privileged $ubuntuvn
+		-v /etc/shadow:/etc/shadow:ro --name=$ubuntunm -it --privileged $ubuntuvn
 else
 	echo "Starting Ubuntu! [$container_id]"
 	docker start $container_id
